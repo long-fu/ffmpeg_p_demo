@@ -80,7 +80,7 @@ int FFmpegEncoder::Init(std::string name, int img_h, int img_w,
 
     video_avc = avcodec_find_encoder(AV_CODEC_ID_H264);
 
-    encoder_avfc->video_codec = video_avc;
+    encoder_avfc->video_codec = (AVCodec *)video_avc;
     encoder_avfc->video_codec_id = AV_CODEC_ID_H264;
 
     video_avcc = avcodec_alloc_context3(video_avc);
@@ -91,8 +91,7 @@ int FFmpegEncoder::Init(std::string name, int img_h, int img_w,
     video_avcc->gop_size = 12;
     video_avcc->height = img_h;
     video_avcc->width = img_w;
-    video_avcc->pix_fmt =
-        (AVPixelFormat)pic_fmt; // AV_PIX_FMT_NV12;// NV12 IS YUV420
+    video_avcc->pix_fmt = (AVPixelFormat)pic_fmt; // AV_PIX_FMT_NV12;// NV12 IS YUV420
     // control rate
     video_avcc->bit_rate = 0;
     video_avcc->rc_buffer_size = 0;
@@ -149,7 +148,6 @@ int FFmpegEncoder::Init(std::string name, int img_h, int img_w,
     video_frame = av_frame_alloc();
     int frame_buf_size = av_image_get_buffer_size(
         video_avcc->pix_fmt, video_avcc->width, video_avcc->height, 1);
-
 
     fprintf(stdout,"expected frame size %d\r\n" ,frame_buf_size);
 
